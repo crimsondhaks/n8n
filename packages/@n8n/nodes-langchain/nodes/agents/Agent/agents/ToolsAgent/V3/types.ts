@@ -34,6 +34,13 @@ export type AgentOptions = {
 	passthroughBinaryImages?: boolean;
 	enableStreaming?: boolean;
 	maxTokensFromMemory?: number;
+	/**
+	 * Force the model to invoke a tool on the first iteration by sending
+	 * `tool_choice: 'required'`. Useful for OpenAI-compatible providers serving
+	 * smaller models that otherwise default to text completion when the
+	 * provider's default is `'auto'`.
+	 */
+	forceFirstToolCall?: boolean;
 	tracingMetadata?: {
 		values?: TracingMetadataEntry[];
 	};

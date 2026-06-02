@@ -203,4 +203,93 @@ describe('createAgentSequence', () => {
 			}),
 		);
 	});
+
+	it('should not bind tools when forceToolUse is false', () => {
+		const mockAgent = mock<any>();
+		const mockRunnableSequence = mock<any>();
+		const mockStepsParser = vi.fn();
+		const bindTools = vi.fn();
+		const modelWithBind = mock<BaseChatModel>({ bindTools });
+
+		(createToolCallingAgent as Mock).mockReturnValue(mockAgent);
+		(RunnableSequence.from as Mock).mockReturnValue(mockRunnableSequence);
+		vi.spyOn(commonHelpers, 'getAgentStepsParser').mockReturnValue(mockStepsParser);
+
+		const options = { maxIterations: 10, returnIntermediateSteps: false };
+		createAgentSequence(
+			modelWithBind,
+			[mockTool],
+			mockPrompt,
+			options,
+			undefined,
+			undefined,
+			null,
+			false,
+		);
+
+		expect(bindTools).not.toHaveBeenCalled();
+		expect(createToolCallingAgent).toHaveBeenCalledWith(
+			expect.objectContaining({ llm: modelWithBind }),
+		);
+	});
+
+	it('should pre-bind tools with tool_choice "required" when forceToolUse is true', () => {
+		const mockAgent = mock<any>();
+		const mockRunnableSequence = mock<any>();
+		const mockStepsParser = vi.fn();
+		const boundRunnable = mock<any>();
+		const bindTools = vi.fn().mockReturnValue(boundRunnable);
+		const modelWithBind = mock<BaseChatModel>({ bindTools });
+
+		(createToolCallingAgent as Mock).mockReturnValue(mockAgent);
+		(RunnableSequence.from as Mock).mockReturnValue(mockRunnableSequence);
+		vi.spyOn(commonHelpers, 'getAgentStepsParser').mockReturnValue(mockStepsParser);
+
+		const options = { maxIterations: 10, returnIntermediateSteps: false };
+		createAgentSequence(
+			modelWithBind,
+			[mockTool],
+			mockPrompt,
+			options,
+			undefined,
+			undefined,
+			null,
+			true,
+		);
+
+		expect(bindTools).toHaveBeenCalledWith([mockTool], { tool_choice: 'required' });
+		expect(createToolCallingAgent).toHaveBeenCalledWith(
+			expect.objectContaining({ llm: boundRunnable }),
+		);
+	});
+
+	it('should fall back to the original model when bindTools is missing', () => {
+		const mockAgent = mock<any>();
+		const mockRunnableSequence = mock<any>();
+		const mockStepsParser = vi.fn();
+		// `bindTools` is optional on BaseChatModel — emulate a model that doesn't expose it.
+		const modelWithoutBind = mock<BaseChatModel>();
+		// vitest-mock-extended auto-mocks every prop; explicitly drop bindTools.
+		(modelWithoutBind as unknown as { bindTools?: unknown }).bindTools = undefined;
+
+		(createToolCallingAgent as Mock).mockReturnValue(mockAgent);
+		(RunnableSequence.from as Mock).mockReturnValue(mockRunnableSequence);
+		vi.spyOn(commonHelpers, 'getAgentStepsParser').mockReturnValue(mockStepsParser);
+
+		const options = { maxIterations: 10, returnIntermediateSteps: false };
+		createAgentSequence(
+			modelWithoutBind,
+			[mockTool],
+			mockPrompt,
+			options,
+			undefined,
+			undefined,
+			null,
+			true,
+		);
+
+		expect(createToolCallingAgent).toHaveBeenCalledWith(
+			expect.objectContaining({ llm: modelWithoutBind }),
+		);
+	});
 });

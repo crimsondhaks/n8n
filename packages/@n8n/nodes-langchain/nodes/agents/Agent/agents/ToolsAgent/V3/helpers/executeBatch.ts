@@ -83,6 +83,15 @@ export async function executeBatch(
 
 		const { tools, prompt, options, outputParser } = itemContext;
 
+		// Iteration 1 (no prior tool calls in `processedResponse`) is the only
+		// place we can usefully force a tool call — once the agent has tool
+		// results to summarise, we want the model free to produce a final
+		// answer.
+		const isFirstIteration = !processedResponse?.metadata?.previousRequests?.length;
+		const forceToolUse = Boolean(
+			options.forceFirstToolCall && isFirstIteration && tools.length > 0,
+		);
+
 		// Create executors for primary and fallback models
 		const executor: AgentRunnableSequence = createAgentSequence(
 			model,
@@ -92,6 +101,7 @@ export async function executeBatch(
 			outputParser,
 			memory,
 			fallbackModel,
+			forceToolUse,
 		);
 
 		// Run the agent with processed response
