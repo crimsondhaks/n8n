@@ -1,3 +1,4 @@
+import { isObject } from '@n8n/utils';
 import type { INode, INodeParameters } from 'n8n-workflow';
 
 /**
@@ -48,13 +49,6 @@ function deepMerge(target: INodeParameters, source: INodeParameters): INodeParam
 	}
 
 	return output;
-}
-
-/**
- * Check if value is an object (not array or null)
- */
-function isObject(item: unknown): item is Record<string, unknown> {
-	return item !== null && typeof item === 'object' && !Array.isArray(item);
 }
 
 /**
