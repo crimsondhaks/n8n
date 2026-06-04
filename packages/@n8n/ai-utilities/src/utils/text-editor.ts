@@ -1,3 +1,5 @@
+import { isObject } from '@n8n/utils';
+
 export interface ViewCommand {
 	command: 'view';
 	path: string;
@@ -155,9 +157,7 @@ function escapeWhitespace(str: string): string {
 	return str.replace(/\n/g, '\\n').replace(/\t/g, '\\t').replace(/\r/g, '\\r');
 }
 
-function isObjectRecord(value: unknown): value is Record<string, unknown> {
-	return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
+const isObjectRecord = isObject;
 
 export function formatTextWithLineNumbers(text: string): string {
 	const lines = text.split('\n');
