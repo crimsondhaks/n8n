@@ -14,7 +14,7 @@ export class DebugController {
 		private readonly instanceSettings: InstanceSettings,
 	) {}
 
-	@Get('/multi-main-setup', { skipAuth: true })
+	@Get('/multi-main-setup')
 	async getMultiMainSetupDetails() {
 		const leaderKey = await this.multiMainSetup.fetchLeaderKey();
 

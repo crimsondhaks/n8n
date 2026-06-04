@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import { Time } from '@n8n/constants';
 import type { User } from '@n8n/db';
 import { normalizePinData } from '@n8n/workflow-sdk';
@@ -197,7 +198,7 @@ export async function testWorkflow(
 		{ json: {} },
 	];
 
-	const mcpMessageId = `mcp-test-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+	const mcpMessageId = `mcp-test-${Date.now()}-${randomBytes(6).toString('hex')}`;
 
 	const runData: IWorkflowExecutionDataProcess = {
 		executionMode: 'manual',

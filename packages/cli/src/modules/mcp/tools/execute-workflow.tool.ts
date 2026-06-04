@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import type { User } from '@n8n/db';
 import {
 	CHAT_TRIGGER_NODE_TYPE,
@@ -262,7 +263,7 @@ const buildRunData = async (
 	}
 
 	// Generate a unique MCP message ID for this execution (used for queue mode correlation)
-	const mcpMessageId = `mcp-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+	const mcpMessageId = `mcp-${Date.now()}-${randomBytes(6).toString('hex')}`;
 
 	const isManualExecution = executionMode === 'manual';
 	const runData: IWorkflowExecutionDataProcess = {

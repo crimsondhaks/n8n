@@ -4,6 +4,7 @@
 /* eslint-disable id-denylist */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
+import { randomBytes } from 'node:crypto';
 import { Logger } from '@n8n/backend-common';
 import { ExecutionsConfig, GlobalConfig } from '@n8n/config';
 import type { Project } from '@n8n/db';
@@ -693,7 +694,7 @@ export async function executeWebhook(
 			const mcpMessageId =
 				(firstItem && 'json' in firstItem && typeof firstItem.json?.mcpMessageId === 'string'
 					? firstItem.json.mcpMessageId
-					: null) ?? `mcp-trigger-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+					: null) ?? `mcp-trigger-${Date.now()}-${randomBytes(6).toString('hex')}`;
 
 			runData.isMcpExecution = true;
 			runData.mcpType = 'trigger';

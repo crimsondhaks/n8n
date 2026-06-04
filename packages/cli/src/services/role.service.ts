@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import type { RoleAssignmentsResponse, RoleProjectMembersResponse } from '@n8n/api-types';
 import { CreateRoleDto, UpdateRoleDto } from '@n8n/api-types';
 import { LicenseState, Logger } from '@n8n/backend-common';
@@ -206,7 +207,7 @@ export class RoleService {
 		role.scopes = scopes;
 		role.systemRole = false;
 		role.roleType = newRole.roleType;
-		role.slug = `${newRole.roleType}:${newRole.displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Math.random().toString(36).substring(2, 8)}`;
+		role.slug = `${newRole.roleType}:${newRole.displayName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${randomBytes(4).toString('hex')}`;
 
 		try {
 			const createdRole = await this.roleRepository.save(role);
