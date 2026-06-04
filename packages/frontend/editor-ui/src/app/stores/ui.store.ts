@@ -111,7 +111,9 @@ try {
 		savedTheme = value;
 		applyThemeToBody(value);
 	}
-} catch (e) {}
+} catch (e) {
+	console.warn('Failed to load theme override, using default', e);
+}
 
 type UiStore = ReturnType<typeof useUIStore>;
 

@@ -46,7 +46,12 @@ async function deriveAuthHeaders(
 ): Promise<Record<string, string>> {
 	if (server.authentication === 'none' || !server.credential) return {};
 
-	const resolved = await credentialProvider.resolve(server.credential).catch(() => null);
+	const resolved = await credentialProvider.resolve(server.credential).catch((error: unknown) => {
+		console.warn(
+			`[mcp-client-factory] Failed to resolve credential for server "${server.name}": ${error instanceof Error ? error.message : String(error)}`,
+		);
+		return null;
+	});
 	if (!resolved) return {};
 
 	if (isMcpOAuth2Authentication(server.authentication)) {

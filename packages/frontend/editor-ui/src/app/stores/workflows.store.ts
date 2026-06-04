@@ -335,7 +335,9 @@ export const useWorkflowsStore = defineStore(STORES.WORKFLOWS, () => {
 				name: newName,
 			});
 			newName = newWorkflow.name;
-		} catch (e) {}
+		} catch (e) {
+			console.warn('Failed to generate unique workflow name, using default', e);
+		}
 		return newName;
 	}
 

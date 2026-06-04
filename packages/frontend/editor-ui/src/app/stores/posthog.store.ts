@@ -106,7 +106,9 @@ export const usePostHog = defineStore('posthog', () => {
 				overrides.value[name] = value;
 				try {
 					useStorage(LOCAL_STORAGE_EXPERIMENT_OVERRIDES).value = JSON.stringify(overrides.value);
-				} catch (e) {}
+				} catch (e) {
+					console.warn('Failed to persist experiment overrides to localStorage', e);
+				}
 			},
 
 			getVariant,

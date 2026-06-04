@@ -140,12 +140,16 @@ export const useEvaluationStore = defineStore(
 					if (['running', 'new'].includes(run.status)) {
 						// Also refresh per-case rows so the run detail page can
 						// surface running / completed cases as they progress.
-						await fetchTestCaseExecutions({ workflowId, runId }).catch(() => {});
+						await fetchTestCaseExecutions({ workflowId, runId }).catch((e: unknown) => {
+							console.warn('Failed to fetch test case executions during polling', e);
+						});
 						pollingTimeouts.value[runId] = setTimeout(poll, 1000);
 					} else {
 						// One last refresh so any cases that finished between
 						// polls (or just arrived as 'success'/'error') land.
-						await fetchTestCaseExecutions({ workflowId, runId }).catch(() => {});
+						await fetchTestCaseExecutions({ workflowId, runId }).catch((e: unknown) => {
+							console.warn('Failed to fetch test case executions on final poll', e);
+						});
 						delete pollingTimeouts.value[runId];
 					}
 				} catch (error) {

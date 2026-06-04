@@ -3288,8 +3288,15 @@ export class InstanceAiService {
 
 	private async schedulePlannedTasks(user: User, threadId: string): Promise<void> {
 		const prev = this.schedulerLocks.get(threadId) ?? Promise.resolve();
-		// eslint-disable-next-line @typescript-eslint/promise-function-async
-		const current = prev.then(() => this.doSchedulePlannedTasks(user, threadId)).catch(() => {});
+		const current = prev
+			// eslint-disable-next-line @typescript-eslint/promise-function-async
+			.then(() => this.doSchedulePlannedTasks(user, threadId))
+			.catch((error: unknown) => {
+				this.logger.warn('Failed to schedule planned tasks', {
+					threadId,
+					error: error instanceof Error ? error.message : String(error),
+				});
+			});
 		this.schedulerLocks.set(threadId, current);
 		await current;
 	}

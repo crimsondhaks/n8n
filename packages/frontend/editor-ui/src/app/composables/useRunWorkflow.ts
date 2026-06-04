@@ -451,7 +451,9 @@ export function useRunWorkflow(useRunWorkflowOpts: {
 					source: options.source,
 					getTestUrl,
 				});
-			} catch (error) {}
+			} catch (error) {
+				console.warn('Failed to display form during workflow run', error);
+			}
 
 			await externalHooks.run('workflowRun.runWorkflow', {
 				nodeName: options.destinationNode?.nodeName,

@@ -124,7 +124,9 @@ export function useExecutionCommands(): CommandGroup {
 						name: VIEWS.EXECUTION_PREVIEW,
 						params: { workflowId: workflowId.value, executionId: nextExecution.id },
 					})
-					.catch(() => {});
+					.catch(() => {
+						// Vue Router throws on duplicate navigation — safe to ignore
+					});
 			} else {
 				await router.replace({
 					name: VIEWS.EXECUTION_HOME,

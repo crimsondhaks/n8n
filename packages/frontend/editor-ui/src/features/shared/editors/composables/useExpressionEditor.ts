@@ -493,14 +493,18 @@ export const useExpressionEditor = ({
 						resolved = resolved.replace(/(\[Object: |\]$)/g, '');
 						try {
 							resolved = String(JSON.parse(resolved));
-						} catch (error) {}
+						} catch {
+							// Invalid JSON — keep the original string
+						}
 					}
 
 					if (/\[Array:\s\[.+\]\]/.test(resolved)) {
 						resolved = resolved.replace(/(\[Array: |\]$)/g, '');
 						try {
 							resolved = String(JSON.parse(resolved));
-						} catch (error) {}
+						} catch {
+							// Invalid JSON — keep the original string
+						}
 					}
 
 					s.resolved = resolved;
