@@ -37,9 +37,15 @@ export function extractSettledToolCalls(messages: AgentMessage[]): ContentToolCa
 export function makeErrorStream(error: unknown): ReadableStream<StreamChunk> {
 	const { readable, writable } = new TransformStream<StreamChunk, StreamChunk>();
 	const writer = writable.getWriter();
-	writer.write({ type: 'error', error }).catch(() => {});
-	writer.write({ type: 'finish', finishReason: 'error' }).catch(() => {});
-	writer.close().catch(() => {});
+	writer.write({ type: 'error', error }).catch(() => {
+		// Stream write failure after error — stream may already be closed
+	});
+	writer.write({ type: 'finish', finishReason: 'error' }).catch(() => {
+		// Stream write failure after error — stream may already be closed
+	});
+	writer.close().catch(() => {
+		// Stream close failure — stream may already be closed
+	});
 	return readable;
 }
 

@@ -188,7 +188,9 @@ export function parseOverrides(
 				description: calls[0].description,
 			};
 		}
-	} catch (e) {}
+	} catch {
+		// Expression parsing may fail for malformed $fromAI calls
+	}
 
 	return null;
 }

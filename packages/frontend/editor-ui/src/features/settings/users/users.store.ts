@@ -180,7 +180,9 @@ export const useUsersStore = defineStore(STORES.USERS, () => {
 		try {
 			await loginWithCookie();
 			initialized.value = true;
-		} catch (e) {}
+		} catch (e) {
+			// Cookie-based login is expected to fail when no session exists
+		}
 	};
 
 	const unsetCurrentUser = () => {

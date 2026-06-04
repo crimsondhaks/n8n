@@ -227,7 +227,9 @@ export const useNodeCreatorStore = defineStore(STORES.NODE_CREATOR, () => {
 					isOutput,
 					getNodeCreatorFilter(sourceNode.name, type, sourceNode),
 				)
-				.catch(() => {});
+				.catch((e: unknown) => {
+					console.warn('Failed to navigate to compatible connection view', e);
+				});
 		}
 	}
 

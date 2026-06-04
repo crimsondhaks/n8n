@@ -187,7 +187,9 @@ export function useCanvasMapping({
 				}
 
 				acc[node.id] = nodeSubtitle;
-			} catch (e) {}
+			} catch (e) {
+				console.warn(`Failed to compute subtitle for node "${node.name}"`, e);
+			}
 
 			return acc;
 		}, {});

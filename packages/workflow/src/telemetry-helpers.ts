@@ -118,7 +118,9 @@ const countPlaceholders = (text: string) => {
 	try {
 		const matches = text.matchAll(placeholder);
 		for (const _ of matches) returnData++;
-	} catch (error) {}
+	} catch {
+		// matchAll may throw on invalid regex input
+	}
 
 	return returnData;
 };
